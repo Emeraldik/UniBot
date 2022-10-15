@@ -9,6 +9,9 @@ sys.path.insert(0, '../cfg')
 
 import config as cfg
 
+sys.path.insert(0, '../modules')
+import date as dt
+
 def CheckMail():
 	email = ilib.IMAP4_SSL('imap.yandex.ru')
 	email.login(cfg.mail['email'], cfg.mail['pass']) #Авторизация в Yandex Mail через IMAP
@@ -56,7 +59,7 @@ def CheckMail():
 				'From' : text[end + 13: fromwho],
 				'HasFile' : HasFile,
 				'SMS_or_FILE' : SMS_or_FILE,
-				'Date' : email_message['Date'],
+				'Date' : dt.toNormalDate(email_message['Date']),
 			},
 		}
 		full_info.update(info)
@@ -68,6 +71,7 @@ def CheckMail():
 	count = {
 		'Count' : counter
 	}
+	
 	full_info.update(count)
 
 	email.logout()

@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup as BS
 from fake_useragent import UserAgent as ua
+import datetime as dt
 
 import sys
 sys.path.insert(0, '../cfg')
@@ -18,7 +19,6 @@ def WhatDay():
 	# 	'Воскресенье',
 	# )
 
-	import datetime as dt
 	x = str(dt.datetime.today()).split()[0].split('-')
 
 	date = dt.date(int(x[0]), int(x[1]), int(x[2]))
@@ -26,6 +26,18 @@ def WhatDay():
 
 	result = int(str(date - date_sec).split()[0]) % 7
 	return result
+
+def toNormalDate(data):
+	#Fri, 07 Oct 2022 12:26:56 +0300
+	raw = data.split()[1:-1]
+	months = (
+		'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jul', 'Jun', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+	)
+	month = str(months.index(raw[1]) + 1)
+	if int(month) < 10:
+		month = '0' + month
+	#07-10-2022 12:26:56
+	return f'{raw[0]}-{month}-{raw[2]} {raw[-1]}'
 
 def PairsToday():
 	session = requests.Session()

@@ -7,6 +7,9 @@ from fake_useragent import UserAgent as ua
 import time
 from datetime import datetime
 import schedule
+import requests
+from bs4 import BeautifulSoup as BS
+import re
 
 import sys
 sys.path.insert(0, '../cfg')
@@ -14,6 +17,34 @@ sys.path.insert(0, '../cfg')
 import config as cfg
 
 #-------------------------------------------------------------------
+def GetFile(mail = None):
+	if mail == None:
+		print('Just Test')
+		mail = ['Плотников Павел Владимирович', '12-10-2022 10:33:11']
+	#https://lk.sut.ru/project/cabinet/forms/files_group_pr.php
+	browser = StartSite()
+	browser.get('https://lk.sut.ru/project/cabinet/forms/files_group_pr.php')
+
+	parsing = BS(browser.page_source, 'html.parser')
+	
+	pars_data = {}
+	counter = 0
+	for child_tr in parsing.find_all("tr", id=re.compile("^tr")):
+		link = child_tr.find(href = True)
+		if link:
+			link = link['href']
+		else:
+			link = 'Nothing'
+
+		pars_data.update({counter: {'Text': child_tr.text, 'link': link}})
+		counter += 1
+
+	result = {}
+	#for i in range(mail['Count']):
+
+		
+
+
 def CheckButton(browser, timecounter = 0, file = None, justOnce = False):
 	if not justOnce:
 		shutdown = file.read()
@@ -102,7 +133,7 @@ def StartLesson(fromSchedule = False, justOnce = False):
 	return toDo
 #-------------------------------------------------------------------
 if __name__ == '__main__':
-	StartLesson()
+	GetFile({0: {'Text': 'Сообщение: Ссылка на видеоhttps://drive.google.com/file/d/1CamT0mEzDVs2DfGz6kaMHKRlUwg3jptg/view?usp=sharing', 'From': 'Парамонов Александр Иванович\r\n                              ', 'HasFile': False, 'SMS_or_FILE': True, 'Date': 'Fri, 07 Oct 2022 12:26:56 +0300'}, 1: {'Text': 'Сообщение: Ссылка на видеоhttps://drive.google.com/file/d/1CamT0mEzDVs2DfGz6kaMHKRlUwg3jptg/view?usp=sharing', 'From': 'Парамонов Александр Иванович\r\n                              ', 'HasFile': False, 'SMS_or_FILE': True, 'Date': 'Fri, 07 Oct 2022 12:27:11 +0300'}, 2: {'Text': 'Сообщение: l 4', 'From': 'Неелова Ольга Леонидовна\r\n                              ', 'HasFile': True, 'SMS_or_FILE': True, 'Date': 'Fri, 14 Oct 2022 08:47:08 +0300'}, 'Count': 3})
 
 
 
