@@ -10,6 +10,7 @@ sys.path.insert(0, 'modules')
 import launch
 import authentification as AT
 import mail
+
 #import subprocess as sp
 
 True_OR_False = {
@@ -44,10 +45,13 @@ def get_Command(message):
 			if log['Count'] < 1 :
 				bot.send_message(message.from_user.id, 'Ничего не найдено...')
 			else:
+				info_with_files = AT.GetFiles(log)
+				print(info_with_files)
 				print(log)
-				#AT.GetFile(log)
-				for i in range(log['Count']):
-					bot.send_message(message.from_user.id, (f'{log[i]["Text"]}\n\nНаличие файла: {True_OR_False[log[i]["HasFile"]]} \nПолучено от: {log[i]["From"]} \nВремя получения : {log[i]["Date"]}'))
+				# for i in range(log['Count']):
+				# 	if log[i]['HasFile']:
+				# 		bot.send_message(message.from_user.id, (info_with_files[i][-1]))
+				# 	bot.send_message(message.from_user.id, (f'{log[i]["Text"]}\n\nНаличие файла: {True_OR_False[log[i]["HasFile"]]} \nПолучено от: {log[i]["From"]} \nВремя получения : {log[i]["Date"]}'))
 		case _:
 			bot.send_message(message.from_user.id, 'Не распознаю команду')
 

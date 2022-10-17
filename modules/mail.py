@@ -53,10 +53,11 @@ def CheckMail():
 		end = text.find('Отправитель')
 		fromwho = text.find('Отвечать необходимо в личном кабинете')
 		
+		guy = text[end + 13: fromwho].strip()
 		info = {
 			counter : {
 				'Text' : text[start: end],
-				'From' : text[end + 13: fromwho],
+				'From' : guy,
 				'HasFile' : HasFile,
 				'SMS_or_FILE' : SMS_or_FILE,
 				'Date' : dt.toNormalDate(email_message['Date']),

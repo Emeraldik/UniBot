@@ -10,6 +10,7 @@ import schedule
 import requests
 from bs4 import BeautifulSoup as BS
 import re
+import date
 
 import sys
 sys.path.insert(0, '../cfg')
@@ -17,10 +18,10 @@ sys.path.insert(0, '../cfg')
 import config as cfg
 
 #-------------------------------------------------------------------
-def GetFile(mail = None):
+def GetFiles(mail = None):
 	if mail == None:
 		print('Just Test')
-		mail = ['Плотников Павел Владимирович', '12-10-2022 10:33:11']
+		mail = {0: {'Text': 'Сообщение: Тут большое сообщение', 'From': 'Кто-то Какой-то Палыч', 'HasFile': True, 'SMS_or_FILE': True, 'Date': 'Fri, 16 Oct 2022 12:26:56 +0300'}}
 	#https://lk.sut.ru/project/cabinet/forms/files_group_pr.php
 	browser = StartSite()
 	browser.get('https://lk.sut.ru/project/cabinet/forms/files_group_pr.php')
@@ -34,16 +35,30 @@ def GetFile(mail = None):
 		if link:
 			link = link['href']
 		else:
-			link = 'Nothing'
+			link = None
 
-		pars_data.update({counter: {'Text': child_tr.text, 'link': link}})
+		t = child_tr.text.split()
+		file = t[-2]
+		if re.match('[а-яА-Я]', t[-2]):
+			file = None
+		x = f'{t[1]} {t[2]} {t[3]}'.strip() 
+		info = [x, f'{t[4]} {t[5]}', file]
+		pars_data.update({counter: {'Info': info, 'link': link}})
 		counter += 1
 
-	result = {}
-	#for i in range(mail['Count']):
+	result = []
+	for i in range(mail['Count']):
+		if mail[i]['HasFile']:
+			for k in range(counter):
+				print(mail[i]['From'], pars_data[k]['Info'][0] ,mail[i]['From'] == pars_data[k]['Info'][0])
+				if mail[i]['From'] == pars_data[k]['Info'][0]:
+					print(mail[i]['Date'], date.addTime(pars_data[k]['Info'][1], -60), date.addTime(pars_data[k]['Info'][1], 240))
+					if mail[i]['Date'] > date.addTime(pars_data[k]['Info'][1], -60) and mail[i]['Date'] < date.addTime(pars_data[k]['Info'][1], 240):
+						result.append([mail[i], pars_data[k]['link']])
+				else:
+					continue
 
-		
-
+	return result
 
 def CheckButton(browser, timecounter = 0, file = None, justOnce = False):
 	if not justOnce:
@@ -98,7 +113,6 @@ def StartSite():
 		options.add_argument(i)
 
 	options.add_argument(f'user-agent={fake}')
-
 	browser = webdriver.Chrome(service = Service(cfg.driver), options = options) # Запуск ГуглХрома
 	browser.get(cfg.url)
 
@@ -133,7 +147,7 @@ def StartLesson(fromSchedule = False, justOnce = False):
 	return toDo
 #-------------------------------------------------------------------
 if __name__ == '__main__':
-	GetFile({0: {'Text': 'Сообщение: Ссылка на видеоhttps://drive.google.com/file/d/1CamT0mEzDVs2DfGz6kaMHKRlUwg3jptg/view?usp=sharing', 'From': 'Парамонов Александр Иванович\r\n                              ', 'HasFile': False, 'SMS_or_FILE': True, 'Date': 'Fri, 07 Oct 2022 12:26:56 +0300'}, 1: {'Text': 'Сообщение: Ссылка на видеоhttps://drive.google.com/file/d/1CamT0mEzDVs2DfGz6kaMHKRlUwg3jptg/view?usp=sharing', 'From': 'Парамонов Александр Иванович\r\n                              ', 'HasFile': False, 'SMS_or_FILE': True, 'Date': 'Fri, 07 Oct 2022 12:27:11 +0300'}, 2: {'Text': 'Сообщение: l 4', 'From': 'Неелова Ольга Леонидовна\r\n                              ', 'HasFile': True, 'SMS_or_FILE': True, 'Date': 'Fri, 14 Oct 2022 08:47:08 +0300'}, 'Count': 3})
+	GetFiles({0: {'Text': 'Сообщение: Ссылка на видеоhttps://drive.google.com/file/d/1CamT0mEzDVs2DfGz6kaMHKRlUwg3jptg/view?usp=sharing', 'From': 'Парамонов Александр Иванович\r\n                              ', 'HasFile': False, 'SMS_or_FILE': True, 'Date': 'Fri, 07 Oct 2022 12:26:56 +0300'}, 1: {'Text': 'Сообщение: Ссылка на видеоhttps://drive.google.com/file/d/1CamT0mEzDVs2DfGz6kaMHKRlUwg3jptg/view?usp=sharing', 'From': 'Парамонов Александр Иванович\r\n                              ', 'HasFile': False, 'SMS_or_FILE': True, 'Date': 'Fri, 07 Oct 2022 12:27:11 +0300'}, 2: {'Text': 'Сообщение: l 4', 'From': 'Неелова Ольга Леонидовна\r\n                              ', 'HasFile': True, 'SMS_or_FILE': True, 'Date': 'Fri, 14 Oct 2022 08:47:08 +0300'}, 'Count': 3})
 
 
 

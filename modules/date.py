@@ -27,6 +27,14 @@ def WhatDay():
 	result = int(str(date - date_sec).split()[0]) % 7
 	return result
 
+def addTime(source, time_plus):
+	format = "%d-%m-%Y %H:%M:%S"
+	dt_object = dt.datetime.strptime(source, format)
+	dt_object += dt.timedelta(seconds = time_plus)
+
+	str = dt.datetime.strftime(dt_object, format)
+	return str
+
 def toNormalDate(data):
 	#Fri, 07 Oct 2022 12:26:56 +0300
 	raw = data.split()[1:-1]
