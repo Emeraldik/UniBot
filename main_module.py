@@ -42,16 +42,21 @@ def get_Command(message):
 		case 'Check Mail':
 			bot.send_message(message.from_user.id, 'Отправляю запрос...')
 			log = mail.CheckMail()
-			if log['Count'] < 1 :
+			counter = log['Count']
+			if counter < 1 :
 				bot.send_message(message.from_user.id, 'Ничего не найдено...')
 			else:
 				info_with_files = AT.GetFiles(log)
-				print(info_with_files)
-				print(log)
-				# for i in range(log['Count']):
-				# 	if log[i]['HasFile']:
-				# 		bot.send_message(message.from_user.id, (info_with_files[i][-1]))
-				# 	bot.send_message(message.from_user.id, (f'{log[i]["Text"]}\n\nНаличие файла: {True_OR_False[log[i]["HasFile"]]} \nПолучено от: {log[i]["From"]} \nВремя получения : {log[i]["Date"]}'))
+				#print(info_with_files)
+				#print(log)
+				for i in range(counter):
+					sms = 'Файлы Группы.'
+					if info_with_files[i][0]['SMS_or_FILE']:
+						sms = 'ЛК Сообщения.'
+					file = ''
+					if info_with_files[i][0]['HasFile']:
+						file = '\n\nФайл : {(info_with_files[i][-1])}'
+					bot.send_message(message.from_user.id, (f'{sms}\n{info_with_files[i][0]["Text"]}\n\nНаличие файла: {True_OR_False[info_with_files[i][0]["HasFile"]]} \nПолучено от: {info_with_files[i][0]["From"]} \nВремя получения : {info_with_files[i][0]["Date"]}{file}'))
 		case _:
 			bot.send_message(message.from_user.id, 'Не распознаю команду')
 

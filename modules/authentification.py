@@ -46,18 +46,41 @@ def GetFiles(mail = None):
 		pars_data.update({counter: {'Info': info, 'link': link}})
 		counter += 1
 
+	browser.get('https://lk.sut.ru/project/cabinet/forms/message.php')
+	parsing = BS(browser.page_source, 'html.parser')
+
+	for child_tr in parsing.find_all("tr", id=re.compile("^tr")):
+		link = child_tr.find(href = True)
+		if link:
+			link = link['href']
+		else:
+			link = None
+
+		t = child_tr.text.split()
+		#print(t)
+		# file = t[-2]
+		# if re.match('[а-яА-Я]', t[-2]):
+		# 	file = None
+		x = f'{t[-4]} {t[-3]} {t[-2]}'.strip() 
+		info = [x, f'{t[0]} {t[1]}']
+		pars_data.update({counter: {'Info': info, 'link': link}})
+		counter += 1
+
+	print(pars_data)
 	result = []
 	for i in range(mail['Count']):
 		if mail[i]['HasFile']:
 			for k in range(counter):
-				print(mail[i]['From'], pars_data[k]['Info'][0] ,mail[i]['From'] == pars_data[k]['Info'][0])
+				#print(mail[i]['From'], pars_data[k]['Info'][0] ,mail[i]['From'] == pars_data[k]['Info'][0])
 				if mail[i]['From'] == pars_data[k]['Info'][0]:
-					print(mail[i]['Date'], date.addTime(pars_data[k]['Info'][1], -60), date.addTime(pars_data[k]['Info'][1], 240))
+					#print(mail[i]['Date'], date.addTime(pars_data[k]['Info'][1], -60), date.addTime(pars_data[k]['Info'][1], 240))
 					if mail[i]['Date'] > date.addTime(pars_data[k]['Info'][1], -60) and mail[i]['Date'] < date.addTime(pars_data[k]['Info'][1], 240):
 						result.append([mail[i], pars_data[k]['link']])
 				else:
 					continue
-
+		else:
+			result.append([mail[i], None])
+	print(result)
 	return result
 
 def CheckButton(browser, timecounter = 0, file = None, justOnce = False):
