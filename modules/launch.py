@@ -1,6 +1,5 @@
 import schedule
 #import requests
-import config as cfg
 import authentification as auth
 import time
 import date as dt

@@ -1,6 +1,5 @@
 import imaplib as ilib
 import email as EM
-import config as cfg
 from bs4 import BeautifulSoup as BS
 #import datetime
 
@@ -15,7 +14,6 @@ import date as dt
 def CheckMail():
 	email = ilib.IMAP4_SSL('imap.yandex.ru')
 	email.login(cfg.mail['email'], cfg.mail['pass']) #Авторизация в Yandex Mail через IMAP
-
 	email.select('inbox') # Переход к 'Входящим'
 	result, data = email.uid('search', 'UNSEEN', 'FROM "anketa@sut.ru"') # Собираем UID писем НЕПРОЧИТАННЫХ от СПбГУТ
 	mails = data[0].split()

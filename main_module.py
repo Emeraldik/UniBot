@@ -55,7 +55,7 @@ def get_Command(message):
 						sms = 'ЛК Сообщения.'
 					file = ''
 					if info_with_files[i][0]['HasFile']:
-						file = '\n\nФайл : {(info_with_files[i][-1])}'
+						file = f'\n\nФайл : {(info_with_files[i][-1])}'
 					bot.send_message(message.from_user.id, (f'{sms}\n{info_with_files[i][0]["Text"]}\n\nНаличие файла: {True_OR_False[info_with_files[i][0]["HasFile"]]} \nПолучено от: {info_with_files[i][0]["From"]} \nВремя получения : {info_with_files[i][0]["Date"]}{file}'))
 		case _:
 			bot.send_message(message.from_user.id, 'Не распознаю команду')

@@ -4,13 +4,15 @@ from selenium.webdriver.chrome.options import Options
 #from selenium.webdriver.common.action_chains import ActionChains as AC
 from selenium.webdriver.common.by import By
 from fake_useragent import UserAgent as ua
+
 import time
 from datetime import datetime
+import date
 import schedule
+
 import requests
 from bs4 import BeautifulSoup as BS
 import re
-import date
 
 import sys
 sys.path.insert(0, '../cfg')
@@ -66,7 +68,7 @@ def GetFiles(mail = None):
 		pars_data.update({counter: {'Info': info, 'link': link}})
 		counter += 1
 
-	print(pars_data)
+	#print(pars_data)
 	result = []
 	for i in range(mail['Count']):
 		if mail[i]['HasFile']:
@@ -80,7 +82,7 @@ def GetFiles(mail = None):
 					continue
 		else:
 			result.append([mail[i], None])
-	print(result)
+	#print(result)
 	return result
 
 def CheckButton(browser, timecounter = 0, file = None, justOnce = False):
