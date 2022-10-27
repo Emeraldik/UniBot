@@ -172,8 +172,7 @@ def StartLesson(fromSchedule = False, justOnce = False):
 	return toDo
 #-------------------------------------------------------------------
 if __name__ == '__main__':
-	GetFiles({0: {'Text': 'Сообщение: Ссылка на видеоhttps://drive.google.com/file/d/1CamT0mEzDVs2DfGz6kaMHKRlUwg3jptg/view?usp=sharing', 'From': 'Парамонов Александр Иванович\r\n                              ', 'HasFile': False, 'SMS_or_FILE': True, 'Date': 'Fri, 07 Oct 2022 12:26:56 +0300'}, 1: {'Text': 'Сообщение: Ссылка на видеоhttps://drive.google.com/file/d/1CamT0mEzDVs2DfGz6kaMHKRlUwg3jptg/view?usp=sharing', 'From': 'Парамонов Александр Иванович\r\n                              ', 'HasFile': False, 'SMS_or_FILE': True, 'Date': 'Fri, 07 Oct 2022 12:27:11 +0300'}, 2: {'Text': 'Сообщение: l 4', 'From': 'Неелова Ольга Леонидовна\r\n                              ', 'HasFile': True, 'SMS_or_FILE': True, 'Date': 'Fri, 14 Oct 2022 08:47:08 +0300'}, 'Count': 3})
-
+	StartLesson(justOnce = True)
 
 
 # //*[@id="knop604816"] -- span element button

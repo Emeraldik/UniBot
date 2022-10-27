@@ -8,7 +8,7 @@ sys.path.insert(0, '../cfg')
 
 import config as cfg
 
-def WhatDay():
+def WhatDay(day = False, week = False):
 	# days = (
 	# 	'Понедельник',
 	# 	'Вторник',
@@ -18,13 +18,19 @@ def WhatDay():
 	# 	'Суббота',
 	# 	'Воскресенье',
 	# )
-
 	x = str(dt.datetime.today()).split()[0].split('-')
 
 	date = dt.date(int(x[0]), int(x[1]), int(x[2]))
-	date_sec = dt.date(2001, 1, 1) # Понедельник 2001-го года
+	result = 1
+	if day:
+		date_sec = dt.date(2001, 1, 1) # Понедельник 2001-го года
 
-	result = int(str(date - date_sec).split()[0]) % 7
+		result = int(str(date - date_sec).split()[0]) % 7 + 1
+	if week:
+		date_sec = dt.date(2022, 8, 29) # Первая неделя семестра
+
+		result = int(str(date - date_sec).split()[0]) // 7 + 1
+
 	return result
 
 def addTime(source, time_plus):
@@ -54,10 +60,10 @@ def PairsToday():
 	headers = {'User-Agent': fake}
 
 	params = {
-	 	'schet': '205.2122/2',
+	 	'schet': '205.2223/1',
 		'type_z': 1,
 		'faculty': 50029,
-		'kurs': 1,
+		'kurs': 2,
 		'group': 54865,
 		'ok': 'Показать',
 		'group_el': 0
@@ -65,20 +71,30 @@ def PairsToday():
 
 	url = 'https://cabinet.sut.ru/raspisanie_all_new'
 	r = requests.post(url, headers = headers, params = params)
-	site = BS(r.text, 'html.parser')
+	site = BS(r.text, 'lxml')
 
 	st = []
 
-	for i in site.find_all(weekday = WhatDay() + 1):
-		#print(i['pair'])
-		if i['pair'] == '83':	
-			st.append('2')
-		else:
-			st.append(i['pair'])
+	week = WhatDay(week = True)
+	for i in site.find_all(weekday = WhatDay(day = True)):
+		str = i.find('span', attrs = {'class':'weeks'}).text
 
-	result = [(int(i)-2) for i in sorted(list(set(st)))]
-	return result
+		x = '(),н*д'
+		for j in x:
+			str = str.replace(j, '')
+		str = str.split()
 
+		for num in str:
+			if int(num) == week:
+				if i['pair'] == '87':	
+					st.append(4)
+				else:
+					st.append(int(i['pair']) - 1)			
+	return st
+
+
+if __name__ == '__main__':
+	print(PairsToday())
 # print(PairsToday())
 #r = session.get('https://lk.sut.ru/cabinet/?login=yes', headers = headers)
 #site = BS(r.text, 'html.parser')
