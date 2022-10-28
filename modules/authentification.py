@@ -33,11 +33,12 @@ def GetFiles(mail = None):
 	pars_data = {}
 	counter = 0
 	for child_tr in parsing.find_all("tr", id=re.compile("^tr")):
-		link = child_tr.find(href = True)
-		if link:
-			link = link['href']
-		else:
-			link = None
+		links = []
+		for k in child_tr.find_all(href = True):
+			if k:
+				links.append(k['href'])
+			else:
+				links = None
 
 		t = child_tr.text.split()
 		file = t[-2]
@@ -45,18 +46,19 @@ def GetFiles(mail = None):
 			file = None
 		x = f'{t[1]} {t[2]} {t[3]}'.strip() 
 		info = [x, f'{t[4]} {t[5]}', file]
-		pars_data.update({counter: {'Info': info, 'link': link}})
+		pars_data.update({counter: {'Info': info, 'link': links}})
 		counter += 1
 
 	browser.get('https://lk.sut.ru/project/cabinet/forms/message.php')
 	parsing = BS(browser.page_source, 'html.parser')
 
 	for child_tr in parsing.find_all("tr", id=re.compile("^tr")):
-		link = child_tr.find(href = True)
-		if link:
-			link = link['href']
-		else:
-			link = None
+		links = []
+		for k in child_tr.find_all(href = True):
+			if k:
+				links.append(k['href'])
+			else:
+				links = None
 
 		t = child_tr.text.split()
 		#print(t)
@@ -65,7 +67,7 @@ def GetFiles(mail = None):
 		# 	file = None
 		x = f'{t[-4]} {t[-3]} {t[-2]}'.strip() 
 		info = [x, f'{t[0]} {t[1]}']
-		pars_data.update({counter: {'Info': info, 'link': link}})
+		pars_data.update({counter: {'Info': info, 'link': links}})
 		counter += 1
 
 	#print(pars_data)
