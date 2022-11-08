@@ -33,6 +33,14 @@ def WhatDay(day = False, week = False):
 
 	return result
 
+def toNormalTime(time = None):
+	if time == None:
+		time = dt.datetime.now()
+		return int(time.hour*60*60) + int(time.minute*60) + int(time.second)
+	else:
+		time = time.split(':')
+		return int(time[0])*60*60 + int(time[1])*60 + int(time[2])
+
 def addTime(source, time_plus):
 	format = "%d-%m-%Y %H:%M:%S"
 	dt_object = dt.datetime.strptime(source, format)
@@ -53,7 +61,7 @@ def toNormalDate(data):
 	#07-10-2022 12:26:56
 	return f'{raw[0]}-{month}-{raw[2]} {raw[-1]}'
 
-def PairsToday():
+def PairsToday(name = False):
 	session = requests.Session()
 
 	fake = ua().google
@@ -86,15 +94,18 @@ def PairsToday():
 
 		for num in str:
 			if int(num) == week:
-				if i['pair'] == '87':	
-					st.append(4)
+				if name:
+					st.append(i.text[:i.text.find('\n'):])	
 				else:
-					st.append(int(i['pair']) - 1)			
+					if i['pair'] == '87':	
+						st.append(4)
+					else:
+						st.append(int(i['pair']) - 1)			
 	return st
 
 
 if __name__ == '__main__':
-	print(PairsToday())
+	print('\n'.join(PairsToday(name = True)), '\n', PairsToday())
 # print(PairsToday())
 #r = session.get('https://lk.sut.ru/cabinet/?login=yes', headers = headers)
 #site = BS(r.text, 'html.parser')

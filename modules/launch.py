@@ -11,15 +11,34 @@ import config as cfg
 
 def ChangeSchedule():
 	pairs = dt.PairsToday()
+
+	global schedules
+	schedules = []
 	for i in pairs:
-	 	schedule.every().day.at(cfg.schedule[i]).do(auth.StartLesson, fromSchedule = True)
+	 	job = schedule.every().day.at(cfg.schedule[i]).do(auth.StartLesson, fromSchedule = True).tag(str(i))
+	 	schedules.append(job)
 
+def DeleteAllSchedule():
+	for i in schedules:
+		schedule.cancel_job(i)
 
-def main():
-	# for i in cfg.schedule:
-	# 	schedule.every().day.at(i).do(auth.StartLesson)
+	schedules.clear()
 
-	schedule.every().day.at('00:00').do(ChangeSchedule)
+def DeleteSchedule(i = 0):
+	schedule.clear(str(i))
+	schedules.pop(i)
+
+def CheckSchedules():
+	print(schedule.get_jobs())
+
+def StartSchedule():
+	if (dt.toNormalTime() > dt.toNormalTime('08:00:00')): 
+		ChangeSchedule()
+		schedule.every().day.at('08:00:00').do(ChangeSchedule).tag('0')
+	else:
+		schedule.every().day.at('08:00:00').do(ChangeSchedule).tag('0')
+	schedule.every().day.at('23:59:00').do(DeleteAllSchedule).tag('64')
+	CheckSchedules()	
 
 	while True:
 		schedule.run_pending()
@@ -27,4 +46,4 @@ def main():
 
 
 if __name__ == '__main__':
-	main()
+	StartSchedule()

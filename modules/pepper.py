@@ -18,6 +18,11 @@ def main():
 		'thread-price text--b cept-tp size--all-l size--fromW3-xl',
 	}
 
+	links_classes = {
+		'boxAlign-jc--all-c space--h-3 width--all-12 btn btn--mode-primary',
+		'boxAlign-jc--all-c space--h-3 width--all-12 btn border--mode-round btn--mode-primary'
+	}
+
 	s = requests.Session()
 	s.headers = headers
 
@@ -56,8 +61,9 @@ def main():
 		for k, v in enumerate(mb, 1):
 			print(f'\t{k} | {v}')
 
-		check = int(input('\nInput number: (1 or 2 or 3) : ')) - 1
-
+		check = int(input('\nInput number: (1 or 2 or 3) or 0 for leave : ')) - 1
+		if check == -1:
+			return 0
 		question = int(input('Exact search? : (1 = YES || or || Another number = NO) : '))
 
 		search = mb[check]
@@ -83,7 +89,6 @@ def main():
 				#print(matcher.real_quick_ratio(), matcher.quick_ratio(), matcher.ratio())
 				if matcher.ratio() < 0.35:
 					continue
-
 				
 				prices = []
 				for j in adds:
@@ -96,7 +101,6 @@ def main():
 				price = prices[0]
 				#print(prices)
 
-
 				discount = i.find('span', attrs={'class':'space--ml-1 size--all-l size--fromW3-xl'})
 				#print(discount)
 				#print(price)
@@ -104,13 +108,28 @@ def main():
 				if ended:
 					continue
 
+				link = i.find('a', attrs={'class':'boxAlign-jc--all-c space--h-3 width--all-12 btn btn--mode-primary'})
+				links = []
+				for j in links_classes:
+					links.append(i.find('a', attrs={'class':j}))
+
+				links = [j for j in links if j != None]
+				if len(links) == 0:
+					link = 'Link not found'
+				else:
+					link = links[0]['href']
+
 				counter += 1
 
 				price = price.text
 				price = price.strip('₽')
 				price = price.replace(' ', '')
-						
+					
 				#print(discount)
+				market = i.find('span', attrs={'class' : 'cept-merchant-name text--b text--color-brandPrimary link'})
+				market_name = 'No name'
+				if market:
+					market_name = market.text
 				if discount != None:
 					discount = discount.text
 					disc = discount.strip('%()-')
@@ -118,9 +137,9 @@ def main():
 
 
 					prc = str(round(int(price) * (100 - int(disc))*0.01))
-					print(f'\n{x}\nPrice : {price} (Discount : {discount}) || Total : {prc}\n' + '-'*80)
+					print(f'\nMarket: {market_name}\n{x}\nPrice : {price} (Discount : {discount}) || Total : {prc}\n{link}\n' + '-'*80)
 				else:
-					print(f'\n{x}\nPrice : {price}\n' + '-'*80)
+					print(f'\nMarket: {market_name}\n{x}\nPrice : {price}\n{link}\n' + '-'*80)
 
 			if counter != 0:
 				print(f'Found : {counter} options')

@@ -18,7 +18,7 @@ True_OR_False = {
 	False : 'Нет',
 }
 
-def file_module(text):
+def file_module(text = ' '):
 	with open('required/check_file.txt', 'w') as file:
 		file.write(text)
 
@@ -48,14 +48,15 @@ def checkBOTMail(message):
 @bot.message_handler(commands=['click'])
 def clickBOTLK(message):
 	bot.send_message(message.from_user.id, 'Принудительно нажимаю кнопку...')
-	file_module(' ')
+	file_module()
 	toDo = AT.StartLesson(justOnce = True)
 	bot.send_message(message.from_user.id, toDo)
 
 @bot.message_handler(commands=['start_click'])
 def start_clickBOTLK(message):
 	bot.send_message(message.from_user.id, 'Запускаем работу модуля...')
-	file_module(' ')
+	file_module()
+	launch.StartSchedule()
 
 @bot.message_handler(commands=['stop_click'])
 def stop_clickBOTLK(message):
@@ -64,9 +65,7 @@ def stop_clickBOTLK(message):
 
 @bot.message_handler(content_types=['text'])
 def somethingBOTText(message):
-	match message.text: 
-		case _:
-			bot.send_message(message.from_user.id, 'Не распознаю команду')
+	bot.send_message(message.from_user.id, 'Не распознаю команду')
 
 def main():
 	bot.polling(none_stop = True, interval = 0)
