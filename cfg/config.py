@@ -7,7 +7,9 @@ load_dotenv(find_dotenv())
 url = 'https://lk.sut.ru/cabinet'
 
 driver = 'D:\\Projects\\UniBot\\required\\chromedriver.exe'
+
 TokenBot = os.getenv('TOKEN')
+chat_ID = os.getenv('CHAT_ID')
 
 bonch = {
 	'email': os.getenv('EMAIL'),
@@ -26,6 +28,7 @@ schedule = { # Время начала 'занятий' бонча
 	4:	'14:35',
 	5:	'16:20',
 	6:	'18:05',
+	10: '14:50',
 }
 
 options = (
